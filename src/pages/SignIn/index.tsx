@@ -22,6 +22,8 @@ import Button from  '../../components/Button';
 
 import logoImg from '../../assets/logo.png';
 
+import { useAuth } from '../../hooks/auth'
+
 import { 
     Container, 
     Title, 
@@ -41,6 +43,8 @@ const SignIn: React.FC = () => {
     const passwordInputRef = useRef<TextInput>(null);
     const navigation = useNavigation();
 
+    const { signIn, user } = useAuth();
+    
     const handleSignIn = useCallback(async (data: SignInFormData) => {
         try {
             formRef.current?.setErrors({});
@@ -54,6 +58,11 @@ const SignIn: React.FC = () => {
 
             await schema.validate(data, {
                 abortEarly: false
+            });
+
+            await signIn({
+                email: data.email,
+                password: data.password
             });
 
         } catch(err){
@@ -70,7 +79,7 @@ const SignIn: React.FC = () => {
                 'Ocorreu um erro ao fazer login, cheque as credenciais.'
             );
         }
-    }, []);
+    }, [signIn]);
 
     return (
         <>
